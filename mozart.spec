@@ -1,6 +1,6 @@
 %define name	mozart
 %define version 1.3.2.20060615
-%define release %mkrel 1
+%define release %mkrel 2
 
 Name:		%{name}
 Version:	%{version}
@@ -24,7 +24,8 @@ BuildRequires:	tetex-dvips
 BuildRequires:	emacs-bin
 BuildRequires:	flex
 BuildRequires:	bison
-BuildRoot:	%{_tmppath}/%{name}-%{version}
+ExclusiveArch:  %{ix86}
+BuildRoot:	    %{_tmppath}/%{name}-%{version}
 
 %description
 The Mozart system provides state-of-the-art support in two areas: open
