@@ -15,8 +15,11 @@ Patch2:		%{name}-1.3.1.20040616.man.patch
 BuildRequires:	libgmp-devel
 BuildRequires:	libgdbm-devel
 BuildRequires:	zlib-devel
-BuildRequires:	tcl tcl-devel
-BuildRequires:	tk tk-devel
+BuildRequires:	libxscrnsaver-devel
+BuildRequires:	tcl
+BuildRequires:	tcl-devel
+BuildRequires:	tk
+BuildRequires:	tk-devel
 BuildRequires:	openjade
 BuildRequires:	ghostscript
 BuildRequires:	tetex-latex
