@@ -1,6 +1,6 @@
 %define name	mozart
 %define version 1.3.2.20060615
-%define release %mkrel 2
+%define release %mkrel 3
 
 Name:		%{name}
 Version:	%{version}
