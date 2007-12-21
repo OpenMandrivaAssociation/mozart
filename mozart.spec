@@ -28,6 +28,7 @@ BuildRequires:	emacs-bin
 BuildRequires:	flex
 BuildRequires:	bison
 ExclusiveArch:  %{ix86}
+BuildRoot:	    %{_tmppath}/%{name}-%{version}
 
 %description
 The Mozart system provides state-of-the-art support in two areas: open
