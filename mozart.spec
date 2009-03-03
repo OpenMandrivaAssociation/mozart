@@ -1,6 +1,7 @@
 %define name	mozart
 %define version 1.3.2.20060615
-%define release %mkrel 6
+%define release %mkrel 7
+%define _disable_ld_no_undefined 1
 
 Name:		%{name}
 Version:	%{version}
@@ -12,6 +13,7 @@ Group:		Development/Other
 Source0:	ftp://ftp.mozart-oz.org/pub/%{version}/tar/%{name}-%{version}-src.tar.bz2
 Patch1:		%{name}-1.3.2.20060615.fhs.patch
 Patch2:		%{name}-1.3.1.20040616.man.patch
+Patch3:		mozart-1.4.0.20080704-fix-tcl-build.patch
 BuildRequires:	libgmp-devel
 BuildRequires:	libgdbm-devel
 BuildRequires:	zlib-devel
@@ -64,6 +66,7 @@ applications that can directly be started from the pages.
 %setup -q
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %configure \
@@ -74,7 +77,7 @@ applications that can directly be started from the pages.
 	--enable-doc \
 	--with-documents=all
 
-make
+make 
 
 %install
 rm -rf %{buildroot}
