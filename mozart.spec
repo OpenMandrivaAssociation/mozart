@@ -1,6 +1,7 @@
 %define name	mozart
-%define version 1.3.2.20060615
-%define release %mkrel 7
+%define version 1.4.0
+%define date    20080704
+%define release %mkrel 1
 %define _disable_ld_no_undefined 1
 
 Name:		%{name}
@@ -8,12 +9,14 @@ Version:	%{version}
 Release:	%{release}
 Summary:	Mozart, an efficient and distributed implementation of Oz
 License:	Mozart License
-Url:		http://www.mozart-oz.org/
 Group:		Development/Other
-Source0:	ftp://ftp.mozart-oz.org/pub/%{version}/tar/%{name}-%{version}-src.tar.bz2
-Patch1:		%{name}-1.3.2.20060615.fhs.patch
-Patch2:		%{name}-1.3.1.20040616.man.patch
+Url:		http://www.mozart-oz.org/
+Source0:	ftp://ftp.mozart-oz.org/pub/%{version}/tar/%{name}-%{version}.%{date}-src.tar.gz
+Patch1:		mozart-1.4.0.20080704-fhs.patch
+Patch2:		mozart-1.4.0.20080704-add-missing-man-pages.patch
 Patch3:		mozart-1.4.0.20080704-fix-tcl-build.patch
+Patch4:     mozart-1.4.0.20080704-fix-build.patch
+Patch5:     mozart-1.4.0.20080704-fix-install.patch
 BuildRequires:	libgmp-devel
 BuildRequires:	libgdbm-devel
 BuildRequires:	zlib-devel
@@ -63,16 +66,19 @@ set of HTML pages, postscript and pdf documents. It also contains demo
 applications that can directly be started from the pages.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}.%{date}
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %build
 %configure \
 	--prefix=%{_datadir}/%{name} \
 	--disable-copy-tcl-libs \
 	--disable-compile-elisp \
+    --disable-contrib-micq \
 	--enable-opt \
 	--enable-doc \
 	--with-documents=all
@@ -91,8 +97,7 @@ find %{buildroot} -type d -exec chmod g-w {} \;
 
 # install man pages
 install -d -m 755 %{buildroot}%{_mandir}/man1
-install -m 644 oz.1 %{buildroot}%{_mandir}/man1
-install -m 644 ozdoc.1 %{buildroot}%{_mandir}/man1
+install -m 644 doc/man/*.1 %{buildroot}%{_mandir}/man1
 
 install -d -m 755 %{buildroot}%{_bindir}
 for f in oz ozengine ozc ozl ozd oztool convertTextPickle ozdoc; do
@@ -142,11 +147,11 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/install/*.diff
 rm -f %{buildroot}%{_datadir}/%{name}/doc/install/FILES
 
 # move the documentation and the examples 
-install -d -m 755 %{buildroot}%{_docdir}/%{name}-doc-%{version}
+install -d -m 755 %{buildroot}%{_docdir}
 mv %{buildroot}%{_datadir}/%{name}/doc \
-	%{buildroot}%{_docdir}/%{name}-doc-%{version}
+	%{buildroot}%{_docdir}/%{name}
 mv %{buildroot}%{_datadir}/%{name}/examples \
-	%{buildroot}%{_docdir}/%{name}-doc-%{version}
+	%{buildroot}%{_docdir}/%{name}
 
 
 %clean
@@ -164,5 +169,4 @@ rm -rf %{buildroot}
 
 %files doc
 %defattr(-,root,root)
-%{_docdir}/%{name}-doc-%{version}
-
+%{_docdir}/%{name}
