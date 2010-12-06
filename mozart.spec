@@ -1,7 +1,7 @@
 %define name	mozart
 %define version 1.4.0
 %define date    20080704
-%define release %mkrel 1
+%define release %mkrel 2
 %define _disable_ld_no_undefined 1
 
 Name:		%{name}
