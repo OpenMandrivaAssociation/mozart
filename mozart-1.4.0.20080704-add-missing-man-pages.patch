@@ -1,0 +1,160 @@
+diff -Naur mozart-1.4.0.20080704/doc/man/oz.1 mozart-1.4.0.20080704-add-missing-man-pages/doc/man/oz.1
+--- mozart-1.4.0.20080704/doc/man/oz.1	1970-01-01 01:00:00.000000000 +0100
++++ mozart-1.4.0.20080704-add-missing-man-pages/doc/man/oz.1	2009-06-10 17:11:33.000000000 +0200
+@@ -0,0 +1,55 @@
++.\"                                      Hey, EMACS: -*- nroff -*-
++.\" First parameter, NAME, should be all caps
++.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
++.\" other parameters are allowed: see man(7), man(1)
++.TH OZ 1 "February 5, 2003"
++.\" Please adjust this date whenever revising the manpage.
++.\"
++.\" Some roff macros, for reference:
++.\" .nh        disable hyphenation
++.\" .hy        enable hyphenation
++.\" .ad l      left justify
++.\" .ad b      justify to both left and right margins
++.\" .nf        disable filling
++.\" .fi        enable filling
++.\" .br        insyert line break
++.\" .sp <n>    insert n+1 empty lines
++.\" for manpage-specific macros, see man(7)
++.SH NAME
++Oz \- The Oz Programming Interface
++.SH SYNOPSIS
++.B oz
++.RI [ emacs " args ]
++
++.SH DESCRIPTION
++.TP
++\fBoz\fP starts up an Emacs process, passing to it all arguments given
++on the command line, creates a new buffer named \fIOz\fP, and starts a
++Mozart sub-process.
++.P
++The command used to invoke Emacs is determined through the following
++steps: If the environment variable \fIOZEMACS\fP is set, its contents
++is used.  Else, if a command named \fBemacs\fP is found in the
++\fIPATH\fP, this is used.  Else, if a command named \fBxemacs\fP is
++found in the \fIPATH\fP, this is used.  Else, if a command named
++\fBlemacs\fP is found in the \fIPATH\fP, this is used.
++
++
++.SH SEE ALSO
++Full documentation of the Mozart system and the Oz programming
++language is available through the
++the \fImozart-doc\fP package, or from the mozart web page
++\fIwww.mozart-oz.org\fP.
++See in particular the document \fIThe Oz Programming Interface\fP.
++
++.P
++.BR ozc (1),
++.BR ozd (1),
++.BR ozengine (1),
++.BR ozl (1),
++.BR oztool (1),
++.BR convertTextPickle (1).
++
++.SH AUTHOR
++This manual page was compiled from the Mozart documentation
++because the original package does not have a manual page for oz.
+diff -Naur mozart-1.4.0.20080704/doc/man/ozdoc.1 mozart-1.4.0.20080704-add-missing-man-pages/doc/man/ozdoc.1
+--- mozart-1.4.0.20080704/doc/man/ozdoc.1	1970-01-01 01:00:00.000000000 +0100
++++ mozart-1.4.0.20080704-add-missing-man-pages/doc/man/ozdoc.1	2009-06-10 17:11:33.000000000 +0200
+@@ -0,0 +1,97 @@
++.TH OZDOC 1 "February 5, 2003"
++.SH NAME
++ozdoc \- Produce documentation using the ozdoc DTD
++.SH SYNOPSIS
++.B ozdoc
++.RI options ...
++.SH DESCRIPTION
++.TP
++The Oz Documentation DTD provides a means to markup technical documentation so
++that it is easy to convert it to alternative publication formats such as LaTeX
++and HTML.
++.B ozdoc
++can be used to process SGML sources written according to the Oz Documentation
++DTD.
++.SH OPTIONS
++.TP
++.B --in=\fIfile\fP
++The input SGML file.
++.TP
++.B --type=\fItype\fP
++What output to generate (supported types: html-color, html-mono,
++html-stylesheets, html-global-index, chunk)
++.TP
++.B --out=\fIdirectory\fP
++The output directory.
++.TP
++.B --(no)autoindex
++Automatically generate index entries.
++.TP
++.B --include=\fIA1\fP,...,\fIAn\fP
++Assume '<!ENTITY & \fIAi\fP "INCLUDE">'.
++.TP
++.B --link=\fItext\fP,\fIrelURL\fP
++Include a link in the margin of each page.
++.TP
++.B --stylesheet=\fIrelURL\fP
++What style sheet to use for generated pages.
++.TP
++.B --(no)latextogif
++Generate GIF files from LaTeX code.
++.TP
++.B --latexdb=\fIfile\fP
++Reuse GIFs generated from LaTeX code.
++.TP
++.B --(no)split
++Split the document into several nodes.
++.TP
++.B --(no)abstract
++Generate an abstract.html auxiliary file.
++.TP
++.B --keeppictures
++Do no recreate GIF from PS if already there.
++.TP
++.B --xrefdb=\fIfile\fP
++Where to look up respectively store references.
++.TP
++.B --xrefdir=\fIrelURL\fP
++Where this document goes relative to the whole documentation installation
++directory.
++.TP
++.B --xreftree=\fIrelURL\fP
++How to get to whole doc installation from the directory where this document
++goes.
++.TP
++.B --indexdb=\fIfile\fP
++Where to look up respectively store index entries.
++.TP
++.B --make-hhc=\fIfile\fP
++Where to write a HTML Help contents file.
++.TP
++.B --ozdoc-home=\fIdirectory\fP
++ozdoc installation directory.
++.TP
++.B --author-path=\fIpath\fP
++.TP
++.B --bib-path=\fIpath\fP
++.TP
++.B --bst-path=\fIpath\fP
++.TP
++.B --sbin-path=\fIpath\fP
++Where to look for author databases, bib files, bst files, and ozdoc scripts.
++.TP
++.B --catalog=\fIfile\fP
++Specify the catalog file to use for parsing.
++
++.SH SEE ALSO
++Full documentation of the Mozart system and the Oz programming
++language is available through the
++the \fImozart-doc\fP package, or from the mozart web page
++\fIwww.mozart-oz.org\fP.
++
++.SH AUTHOR
++This manual page was compiled from the Mozart documentation
++because the original package does not have a manual page for
++ozdoc.
++
++

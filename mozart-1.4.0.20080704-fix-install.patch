@@ -1,0 +1,33 @@
+diff -Naur --exclude '*~' mozart-1.4.0.20080704/platform/dss/Makefile.in mozart-1.4.0.20080704-fix-install/platform/dss/Makefile.in
+--- mozart-1.4.0.20080704/platform/dss/Makefile.in	2008-07-02 10:01:31.000000000 +0200
++++ mozart-1.4.0.20080704-fix-install/platform/dss/Makefile.in	2009-06-10 16:27:13.000000000 +0200
+@@ -64,11 +64,11 @@
+ 	-rm -f Makefile config.*
+ 
+ install: all
+-	mkdir -p @prefix@
+-	mkdir -p @prefix@/include
+-	mkdir -p @prefix@/lib
+-	@INSTALL@ @ENVTYPE@ @prefix@/lib; @EXAMPLES@
+-	@COPY_HEADERS@
++	mkdir -p $(PREFIX)
++	mkdir -p $(PREFIX)/include
++	mkdir -p $(PREFIX)/lib
++	@INSTALL@ @ENVTYPE@ $(PREFIX)/lib; @EXAMPLES@
++	@INSTALL@ @srcdir@/include/*.hh $(PREFIX)/include/
+ 
+ depend:: $(REALSRC)
+ 	$(DEPEND) $^ > Makefile.deps
+diff -Naur --exclude '*~' mozart-1.4.0.20080704/platform/dss/Makefile.vars.in mozart-1.4.0.20080704-fix-install/platform/dss/Makefile.vars.in
+--- mozart-1.4.0.20080704/platform/dss/Makefile.vars.in	2008-06-26 15:39:31.000000000 +0200
++++ mozart-1.4.0.20080704-fix-install/platform/dss/Makefile.vars.in	2009-06-10 16:27:33.000000000 +0200
+@@ -9,7 +9,8 @@
+ CXXFLAGS= @CXXFLAGS@
+ DEPEND  = $(CXX) -MM $(CXXFLAGS)
+ 
+-INSTDIR = @prefix@
++PREFIX  = @prefix@
++INSTDIR = $(PREFIX)
+ INSTALL = @INSTALL@
+ 
+ ROOTDIR = @abs_srcdir@

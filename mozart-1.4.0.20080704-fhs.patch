@@ -1,0 +1,461 @@
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/contrib/doc/code/Fontifier.oz mozart-1.4.0.20080704-fhs/contrib/doc/code/Fontifier.oz
+--- mozart-1.4.0.20080704/contrib/doc/code/Fontifier.oz	2003-05-06 16:11:48.000000000 +0200
++++ mozart-1.4.0.20080704-fhs/contrib/doc/code/Fontifier.oz	2009-06-10 17:32:49.000000000 +0200
+@@ -42,8 +42,6 @@
+ %%% {Fontifier.loadpath.push DIR}
+ %%%
+ %%%	LOADPATH is a list of directories to add to emacs load-path.
+-%%% The default adds $OZHOME/share/elisp to search for oz specific
+-%%% elisp libraries.
+ %%%
+ %%% {Fontifier.requires.get  FILES}
+ %%% {Fontifier.requires.set  FILES}
+@@ -142,7 +140,8 @@
+    ProcessRequest
+ define
+    EMACS = {NewCell 'emacs'}
+-   EPATH = {NewCell [{Property.get 'oz.home'}#'/share/elisp']}
++   %% Changed for Debian/GNU: elisp files will be found on default path
++   EPATH = {NewCell nil}
+    ELOAD = {NewCell ['oz' 'Fontifier']}
+ 
+    ApiEmacs = o(get :proc {$ X} {Access EMACS X} end
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/doc/opi/opi.sgml mozart-1.4.0.20080704-fhs/doc/opi/opi.sgml
+--- mozart-1.4.0.20080704/doc/opi/opi.sgml	2004-03-03 12:03:47.000000000 +0100
++++ mozart-1.4.0.20080704-fhs/doc/opi/opi.sgml	2009-06-10 17:32:49.000000000 +0200
+@@ -601,19 +601,12 @@
+ 	<Index/<<oz>> shell script/
+ 	<Index/shell script<And><<oz>>/
+ 	In order to run the Mozart system, the &OPI; has to know its
+-	installation path.  This is normally found through the environment
+-	variable <Var type=env/OZHOME/; it will have been set by the
+-	<File/oz/ shell script if you started the &OPI; with it.
+-	If it is not set, the value of the following variable will be used
+-	instead.
++	installation path:
+ 	<List>
+ 	  <Entry class=useroption><Span class=index/<<OZ-HOME>>/
+-	    (default: <File>/usr/local/oz</File><Note foot>This default is
+-	    actually fixed at the time the Mozart system is configured and
+-	    built, so it might vary on your system.</Note>)
++	    (default: <File>/usr/share/mozart</File>)
+ 	  <Item>
+-	    Directory where Oz is installed.  Only used as fallback when
+-	    the environment variable <Var type=env/OZHOME/ is not set.
++	    Directory where Oz is installed.
+ 	</List>
+       <Section>
+ 	<Title/Running and Halting/
+@@ -1386,7 +1379,7 @@
+ <<<prefix=x-oz\\://system/=?{oz-build-dir}/share/lib/:
+ prefix=x-oz\\://system/=?{oz-build-dir}/share/tools/:
+ prefix=x-oz\\://boot/=?{oz-build-dir}/platform/emulator/:
+-cache=~/.oz/cache:cache=?{oz-home}/cache>>>
++cache=~/.oz/cache:cache=/usr/lib/mozart/cache:cache=/usr/share/mozart/cache>>>
+ 	      where ?{oz-home} stands for the value of the environment
+ 	      variable <Var type=env/OZHOME/.
+ 	    <Entry class=useroption><Span class=index/<<oz-root-functor>>/
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/doc/utilities/Main.oz mozart-1.4.0.20080704-fhs/doc/utilities/Main.oz
+--- mozart-1.4.0.20080704/doc/utilities/Main.oz	2003-12-18 16:18:08.000000000 +0100
++++ mozart-1.4.0.20080704-fhs/doc/utilities/Main.oz	2009-06-10 17:32:49.000000000 +0200
+@@ -123,7 +123,8 @@
+ 	 OZDOC_HOME =
+ 	 case Args.'ozdoc-home' of unit then
+ 	    case {OS.getEnv 'OZDOC_HOME'} of false then
+-	       {Property.get 'oz.home'}#'/share/doc'
++	       %% Changed for Debian/GNU
++	       '/usr/share/mozart/share/doc'
+ 	    elseof X then X end
+ 	 elseof X then X end
+ 	 {Property.put 'ozdoc.home' OZDOC_HOME}
+@@ -151,7 +152,8 @@
+ 	 ELISP_PATH =
+ 	 case Args.'elisp-path' of unit then
+ 	    case {OS.getEnv 'OZDOC_ELISP_PATH'} of false then
+-	       SRC_DIR#':'#{Property.get 'oz.home'}#'/share/elisp'
++	       %% Changed for Debian/GNU: elisp files are found on default path
++	       SRC_DIR
+ 	    elseof X then X end
+ 	 elseof X then X end
+ 	 {Property.put 'ozdoc.elisp.path' ELISP_PATH}
+@@ -165,7 +167,8 @@
+ 	 CSS =
+ 	 case Args.'stylesheet' of unit then
+ 	    case {OS.getEnv 'OZDOC_STYLESHEET'} of false then
+-	       {Property.get 'oz.home'}#'/share/doc'
++	       %% Changed for Debian/GNU
++	       '/usr/share/mozart/share/doc'
+ 	    elseof X then X end
+ 	 elseof X then X end
+ 	 {Property.put 'ozdoc.stylesheet' CSS}
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/doc/wp/canvas.sgml mozart-1.4.0.20080704-fhs/doc/wp/canvas.sgml
+--- mozart-1.4.0.20080704/doc/wp/canvas.sgml	2004-02-27 18:41:42.000000000 +0100
++++ mozart-1.4.0.20080704-fhs/doc/wp/canvas.sgml	2009-06-10 17:32:49.000000000 +0200
+@@ -330,8 +330,7 @@
+       meth init(parent:P done:D stopped:S)
+          {self tkInit(parent:P)}
+          {P tk(create bitmap 0 0
+-   	       bitmap:'@'#{Property.get 'oz.home'}#
+-                      '/doc/wp/magnifier.xbm'
++   	       bitmap:'@'#'/usr/share/mozart/doc/wp/magnifier.xbm'
+    	       tags:self foreground:blue)}
+          thread {self move(D S)} end
+       end
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/doc/wp/widgets-1.sgml mozart-1.4.0.20080704-fhs/doc/wp/widgets-1.sgml
+--- mozart-1.4.0.20080704/doc/wp/widgets-1.sgml	1999-08-24 12:03:01.000000000 +0200
++++ mozart-1.4.0.20080704-fhs/doc/wp/widgets-1.sgml	2009-06-10 17:32:49.000000000 +0200
+@@ -540,13 +540,10 @@
+ 	the value is interpreted as filename.  For instance, feeding
+ <index class=tails/<<Property>><and><<get>>/
+ <chunk class=anonymous><title/Bitmap Options/
+-{L2 tk(configure bitmap:     '@'#{Property.get 'oz.home'}#
+-                             '/doc/wp/queen.xbm'
++{L2 tk(configure bitmap:     '@'#'/usr/share/mozart/doc/wp/queen.xbm'
+                  foreground: orange)}
+ </chunk>
+-	displays a bitmap stored in a file.  Here the file name is given
+-	relative to where the Mozart system has been installed, that
+-	is relative to <<{Property.get 'oz.home'}>> (for the system module <<Property>> see <ptr.extern to="ozdoc:system" key="chapter.property">).
++	displays a bitmap stored in a file.
+ 
+       <para class=apropos><title/predefined bitmaps/
+ 	If the first character is different from <File/@/, it is interpreted
+@@ -670,7 +667,7 @@
+                </picture.choice>
+ <index class=tails/<<Tk>><and><<image>>/
+ <chunk class=anonymous><title/Tk.image/
+-D ={Property.get 'oz.home'}#'/doc/wp/'
++D ='/usr/share/mozart/doc/wp/'
+ I ={New Tk.image tkInit(type:photo format:ppm file:D#'truck-left.ppm')}
+ L1={New Tk.label tkInit(parent:W image:I)}
+ L2={New Tk.label tkInit(parent:W image:I)}
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/platform/emulator/oztool.in mozart-1.4.0.20080704-fhs/platform/emulator/oztool.in
+--- mozart-1.4.0.20080704/platform/emulator/oztool.in	2004-05-18 15:29:34.000000000 +0200
++++ mozart-1.4.0.20080704-fhs/platform/emulator/oztool.in	2009-06-10 17:32:49.000000000 +0200
+@@ -35,17 +35,7 @@
+ 
+ # determine oztool includes
+ if test "${OZTOOL_INCLUDES-NONE}" = NONE; then
+-  if test -n "$OZHOME" && test -r "$OZHOME/include/mozart.h"; then
+-    OZTOOL_INCLUDES="-I$OZHOME/include"
+-  else
+-    oz_tmp=`dirname $0`
+-    oz_tmp=`cd $oz_tmp/.. & pwd`
+-    if test -r "$oz_tmp/include/mozart.h"; then
+-      OZTOOL_INCLUDES="-I$oz_tmp/include"
+-    else
+-      OZTOOL_INCLUDES="-I@prefix@/include";
+-    fi
+-  fi
++  OZTOOL_INCLUDES="-I/usr/include/mozart"
+ fi
+ 
+ : ${oztool_cxx="@OZTOOL_CXX@ @OZTOOLDYNOPT@ $OZTOOL_INCLUDES"}
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/share/bin/oz.in mozart-1.4.0.20080704-fhs/share/bin/oz.in
+--- mozart-1.4.0.20080704/share/bin/oz.in	2008-04-22 10:40:41.000000000 +0200
++++ mozart-1.4.0.20080704-fhs/share/bin/oz.in	2009-06-10 17:32:49.000000000 +0200
+@@ -1,35 +1,20 @@
+ #!/bin/sh
+ 
+-# uncomment and adapt the following line if you want
+-# to draw links from say /usr/local/bin to OZHOME/bin
+-# see chapter "installation" in the users manual for more information
+-
+-# OZHOME=/usr/local/mozart
+-
+-
+-
+-
+-######################################################################
+-# you should not edit below this line
+-
+ # where Oz resides:
+ 
+ howcalled="$0"
+ cmd=`basename "$howcalled"`
+ 
+-if test -z "${OZHOME}"
+-then
+-  dir=`dirname "$howcalled"`
+-  OZHOME=`(cd "$dir"; cd ..; /bin/pwd)`
+-fi
+-export OZHOME
++# Changed for Debian/GNU
+ 
+-: ${OZPLATFORM=`"$OZHOME/bin/ozplatform"`}
+-: ${OZEMULATOR="$OZHOME/platform/$OZPLATFORM/emulator.exe"}
++OZHOME=/usr/share/mozart
++: ${OZPLATFORM=`"/usr/lib/mozart/bin/ozplatform"`}
++: ${OZEMULATOR="/usr/lib/mozart/platform/$OZPLATFORM/emulator.exe"}
+ : ${OZVERSION="@OZVERSION@"}
+ : ${OZ_DOTOZ="$HOME/.oz/$OZVERSION"}
+-: ${OZ_LD_LIBRARY_PATH="$OZ_DOTOZ/platform/$OZPLATFORM/lib:$OZHOME/platform/$OZPLATFORM/lib${LD_LIBRARY_PATH:+:}${LD_LIBRARY_PATH}"}
+-: ${OZ_DYLD_LIBRARY_PATH="$OZ_DOTOZ/platform/$OZPLATFORM/lib:$OZHOME/platform/$OZPLATFORM/lib${DYLD_LIBRARY_PATH:+:}${DYLD_LIBRARY_PATH}"}
++: ${OZ_LD_LIBRARY_PATH="$OZ_DOTOZ/platform/$OZPLATFORM/lib:/usr/lib/mozart/platform/$OZPLATFORM/lib${LD_LIBRARY_PATH:+:}${LD_LIBRARY_PATH}"}
++: ${OZ_DYLD_LIBRARY_PATH="$OZ_DOTOZ/platform/$OZPLATFORM/lib:/usr/lib/mozart/platform/$OZPLATFORM/lib${DYLD_LIBRARY_PATH:+:}${DYLD_LIBRARY_PATH}"}
++export OZHOME
+ 
+ LD_LIBRARY_PATH="$OZ_LD_LIBRARY_PATH"
+ export LD_LIBRARY_PATH
+@@ -44,10 +29,10 @@
+   then
+      OZPATH=.
+   fi
+-  OZPATH="${OZPATH}:${OZHOME}/share"
++  OZPATH="${OZPATH}:/usr/share/mozart/share"
+   export OZPATH
+   # increment path
+-  PATH="${OZHOME}/bin:${PATH}"
++  PATH="/usr/lib/mozart/bin:${PATH}"
+   export PATH
+   OZ_PI=1
+   export OZ_PI
+@@ -78,14 +63,8 @@
+ 		exit 1
+ 	    fi
+ 	fi
+-	if ( "$OZEMACS" --version | grep XEmacs > /dev/null 2>&1 )
+-	then
+-	    exec "$OZEMACS" \
+-		    --eval '(setq load-path (cons "'$OZHOME'/share/elisp" load-path))' \
+-		    -l oz.elc -f run-oz "$@"
+-	else
+-	    exec "$OZEMACS" -L "$OZHOME/share/elisp" -l oz.elc -f run-oz "$@"
+-	fi
++	## Changed for Debian/GNU: elisp files will be found on default path
++	exec $OZEMACS -l oz.el -f run-oz "$@"
+ 	;;
+ 
+    ozengine)  # that is the real thing
+@@ -106,15 +85,18 @@
+ 	;;
+ 
+    oztool)
+-	exec sh "$OZHOME/platform/$OZPLATFORM/oztool.sh" "$@"
++	## Changed for Debian/GNU
++	exec sh "/usr/lib/mozart/platform/$OZPLATFORM/oztool.sh" "$@"
+ 	;;
+    text2pickle)
+-	exec "$OZHOME/platform/$OZPLATFORM/text2pickle.exe" "$@"
++	## Changed for Debian/GNU
++	exec "/usr/lib/mozart/platform/$OZPLATFORM/text2pickle.exe" "$@"
+ 	;;
+ 
+    pickle2text|oldpickle2text)
++	## Changed for Debian/GNU
+ 	exec "$OZEMULATOR" --pickle2text "$@" | 
+-             "$OZHOME/platform/$OZPLATFORM/text2pickle.exe" --textmode
++	      "/usr/lib/mozart/platform/$OZPLATFORM/text2pickle.exe" --textmode
+ 	;;
+ 
+    *)
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/share/elisp/mozart.el.in mozart-1.4.0.20080704-fhs/share/elisp/mozart.el.in
+--- mozart-1.4.0.20080704/share/elisp/mozart.el.in	2007-02-26 18:40:27.000000000 +0100
++++ mozart-1.4.0.20080704-fhs/share/elisp/mozart.el.in	2009-06-10 17:32:49.000000000 +0200
+@@ -51,8 +51,10 @@
+ 	   :group 'oz
+ 	   :prefix "oz-")))
+ 
++;; Changed for Debian/GNU
++
+ (eval-and-compile
+-  (eval '(defcustom oz-prefix "@prefix@"
++  (eval '(defcustom oz-prefix "/usr/share/mozart"
+ 	   "*Directory where Mozart is installed.
+ Used as fallback if the environment variable OZHOME is not set."
+ 	   :type 'string
+@@ -99,17 +101,27 @@
+ 
+ (defvar *OZ_PI* (getenv "OZ_PI"))
+ 
+-(defvar *OZHOME*
+-  (or (getenv "OZ_HOME")
+-      (getenv "OZHOME")
+-      oz-prefix))
++;; Changed for Debian/GNU; If *OZHOME* is nil then use standard
++;; Debian paths, e.g. look for ozengine in $PATH. 
++;; THIS BREAKS PROFILES
++
++;;(defvar *OZHOME*
++;;  (or (getenv "OZ_HOME")
++;;      (getenv "OZHOME")
++;;      oz-prefix))
++
++(defvar *OZHOME* nil)
+ 
+ (defvar oz-platform
+   (if (memq system-type '(ms-dos windows-nt)) "win32-i486"
+-    (and *OZHOME*
+-	 (substring
+-	  (shell-command-to-string
+-	   (concat *OZHOME* "/bin/ozplatform")) 0 -1))))
++    (cond (*OZHOME*
++	   (and *OZHOME*
++		(substring
++		 (shell-command-to-string
++		  (concat *OZHOME* "/bin/ozplatform")) 0 -1)))
++	  (t (substring
++		 (shell-command-to-string
++		  (concat *OZHOME* "/usr/lib/mozart/bin/ozplatform")) 0 -1)))))
+ 
+ (defun oz-platform ()
+   (cond (oz-platform)
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/share/examples/fd/knights.oz mozart-1.4.0.20080704-fhs/share/examples/fd/knights.oz
+--- mozart-1.4.0.20080704/share/examples/fd/knights.oz	1999-10-15 23:30:30.000000000 +0200
++++ mozart-1.4.0.20080704-fhs/share/examples/fd/knights.oz	2009-06-10 17:32:49.000000000 +0200
+@@ -26,8 +26,8 @@
+ %%
+ 
+ declare
+-[Graphics]={Module.link [({Property.get 'oz.home'}#
+-			  '/examples/fd/graphics/Knights.ozf')]}
++%% Changed for Debian/GNU: examples are in /usr/share/mozart/examples
++[Graphics]={Module.link ['/usr/share/mozart/examples/fd/graphics/Knights.ozf')]}
+ {Graphics.add}
+ 
+ declare
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/share/examples/fd/queens.oz mozart-1.4.0.20080704-fhs/share/examples/fd/queens.oz
+--- mozart-1.4.0.20080704/share/examples/fd/queens.oz	1999-10-15 23:30:30.000000000 +0200
++++ mozart-1.4.0.20080704-fhs/share/examples/fd/queens.oz	2009-06-10 17:32:49.000000000 +0200
+@@ -25,8 +25,8 @@
+ %% Load graphical plugin for Explorer
+ %%
+ declare
+-[Graphics]={Module.link [({Property.get 'oz.home'}#
+-			  '/examples/fd/graphics/Queens.ozf')]}
++%% Changed for Debian/GNU: examples are in /usr/share/mozart/examples
++[Graphics]={Module.link ['/usr/share/mozart/examples/fd/graphics/Queens.ozf')]}
+ {Graphics.add}
+ 
+ 
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/share/lib/init/Prop.oz mozart-1.4.0.20080704-fhs/share/lib/init/Prop.oz
+--- mozart-1.4.0.20080704/share/lib/init/Prop.oz	2004-03-06 13:31:35.000000000 +0100
++++ mozart-1.4.0.20080704-fhs/share/lib/init/Prop.oz	2009-06-10 17:32:49.000000000 +0200
+@@ -53,10 +53,14 @@
+ 		      elseof V then V end
+ 		   elseof V then V end}
+ 
++%% Changed for Debian/GNU: The search path is extended by the
++%% installation directory for system-independent files,
++%% /usr/share/mozart/share.
++
+ OZ_SEARCH_PATH	= case {Getenv 'OZ_SEARCH_PATH'} of false then
+ 		     case {Getenv 'OZ_PATH'} of false then
+ 			case {Getenv 'OZPATH'} of false then
+-			   '.'#[PATH_SEPARATOR]#OZ_HOME#'/share'
++			   '.'#[PATH_SEPARATOR]#'/usr/share/mozart/share'
+ 			elseof V then V end
+ 		     elseof V then V end
+ 		  elseof V then V end
+@@ -67,11 +71,17 @@
+ 		     elseof V then {SafePath V} end
+ 		  elseof V then {SafePath V} end
+ 
++%% Changed for Debian/GNU: In the Debian installation, the caches
++%% are searched in the following order: user's home cache,
++%% system-dependent cache (/usr/lib/mozart), system-independent
++%% cache (/usr/share/mozart).
++
+ OZ_SEARCH_LOAD	= case {Getenv 'OZ_SEARCH_LOAD'} of false then
+ 		     case {Getenv 'OZ_LOAD'} of false then
+ 			case {Getenv 'OZLOAD'} of false then
+ 			   'cache='#OZ_DOTOZ#'/cache'#[PATH_SEPARATOR]#
+-			   'cache='#OZ_HOME#'/cache'
++			   'cache=/usr/lib/mozart/cache'#[PATH_SEPARATOR]#
++			   'cache=/usr/share/mozart/cache'
+ 			elseof V then V end
+ 		     elseof V then V end
+ 		  elseof V then V end
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/share/lib/linker/Main.oz mozart-1.4.0.20080704-fhs/share/lib/linker/Main.oz
+--- mozart-1.4.0.20080704/share/lib/linker/Main.oz	2001-08-07 12:06:16.000000000 +0200
++++ mozart-1.4.0.20080704-fhs/share/lib/linker/Main.oz	2009-06-10 17:32:49.000000000 +0200
+@@ -71,7 +71,9 @@
+       '#!/bin/sh\nexec '#Path#' $0 "$@"\n'
+    end
+    fun {MakeExecFile File}
+-      {Property.get 'oz.home'}#'/bin/'#File
++      %% Changed for Debian/GNU: binary headers for Windows are
++      %% in /usr/share/mozart
++      '/usr/share/mozart/bin/'#File
+    end
+    DefaultExecWindows = file({MakeExecFile 'ozwrapper.bin'})
+    DefaultExecUnix    = string({MakeExecHeader 'ozengine'})
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/share/lib/ozbatch/Compile.oz mozart-1.4.0.20080704-fhs/share/lib/ozbatch/Compile.oz
+--- mozart-1.4.0.20080704/share/lib/ozbatch/Compile.oz	2008-04-22 10:40:41.000000000 +0200
++++ mozart-1.4.0.20080704-fhs/share/lib/ozbatch/Compile.oz	2009-06-10 17:32:49.000000000 +0200
+@@ -211,7 +211,9 @@
+       '#!/bin/sh\nexec '#Path#' "$0" "$@"\n'
+    end
+    fun {MakeExecFile File}
+-      {Property.get 'oz.home'}#'/bin/'#File
++      %% Changed for Debian/GNU: binary headers for Windows are
++      %% in /usr/share/mozart
++      '/usr/share/mozart/bin/'#File
+    end
+ 
+    DefaultExecWindows = file({MakeExecFile 'ozwrapper.bin'})
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/share/lib/wp/Tk.oz mozart-1.4.0.20080704-fhs/share/lib/wp/Tk.oz
+--- mozart-1.4.0.20080704/share/lib/wp/Tk.oz	2003-05-01 00:05:03.000000000 +0200
++++ mozart-1.4.0.20080704-fhs/share/lib/wp/Tk.oz	2009-06-10 17:32:49.000000000 +0200
+@@ -449,14 +449,17 @@
+ 
+    Stream = local
+ 	       Platform = {Property.get 'platform.name'}
+-	       PLTFRM = ({Property.get 'oz.home'} #
+-			 '/platform/'#Platform#'/')
++	       %% Changed for Debian/GNU: platform-specific files
++	       %% are in /usr/lib/mozart
++	       PLTFRM = '/usr/lib/mozart/platform/'#Platform#'/'
+ 	       TKEXE = case {Property.get 'platform.arch'}
+ 		       of 'darwin' then 'OzWish.app/Contents/MacOS/OzWish'
+ 		       else 'tk.exe' end
+ 	    in
+-	       {OS.putEnv 'TCL_LIBRARY' PLTFRM#'wish/tcl'}
+-	       {OS.putEnv 'TK_LIBRARY'  PLTFRM#'wish/tk'}
++	       %% Changed for Debian/GNU: use the pre-installed
++	       %% versions of tcl and tk
++	       {OS.putEnv 'TCL_LIBRARY' '/usr/lib/tcl8.4'}
++	       {OS.putEnv 'TK_LIBRARY'  '/usr/lib/tk8.4'}
+ 
+ 	       % RS: on MS Windows we use a socket: before we used
+ 	       % pipes, but on NT this made problems when certain background
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/share/tools/gump/Main.oz mozart-1.4.0.20080704-fhs/share/tools/gump/Main.oz
+--- mozart-1.4.0.20080704/share/tools/gump/Main.oz	2001-10-25 13:38:35.000000000 +0200
++++ mozart-1.4.0.20080704-fhs/share/tools/gump/Main.oz	2009-06-10 17:32:49.000000000 +0200
+@@ -21,7 +21,9 @@
+ 
+ local
+    local
+-      OZHOME      = {Property.get 'oz.home'}
++      %% Changed for Debian/GNU: Platform-specific files like
++      %% flex.exe are in /usr/lib/mozart
++      PLATFORMDIR = '/usr/lib/mozart/platform/'#{Property.get 'platform.name'}
+    in
+       %% include dirs for testing in bootstrap mode:
+       %%	mozart/platform/emulator mozart/platform/tools/gump
+@@ -44,7 +46,7 @@
+ 	 case {Property.condGet 'oz.exe.flex' unit} of unit
+ 	 then case {OS.getEnv 'OZFLEX'} of false
+ 	      then
+-		 OZHOME#'/platform/'#{Property.get 'platform.name'}#'/flex.exe'
++		 PLATFORMDIR#'/flex.exe'
+ 	      elseof X then X end
+ 	 elseof X then X end
+       end
+diff -Naur --exclude '*.orig' mozart-1.4.0.20080704/share/tools/ozcar/ozd.oz mozart-1.4.0.20080704-fhs/share/tools/ozcar/ozd.oz
+--- mozart-1.4.0.20080704/share/tools/ozcar/ozd.oz	2004-03-06 13:31:35.000000000 +0100
++++ mozart-1.4.0.20080704-fhs/share/tools/ozcar/ozd.oz	2009-06-10 17:32:49.000000000 +0200
+@@ -126,10 +126,11 @@
+ 		       end
+ 		    elseof X then X
+ 		    end
++	    %% Changed for Debian/GNU: Augmenting the Emacs
++	    %% load path is not necessary
+ 	    _ = {New Open.pipe
+ 		 init(cmd: EMACS
+-		      args: ['-L' {Property.get 'oz.home'}#'/share/elisp'
+-			     '-l' 'oz' '-f' 'oz-attach' Port])}
++		      args: ['-l' 'oz' '-f' 'oz-attach' Port])}
+ 	 end
+ 	 I = {New Emacs.interface
+ 	      init(E unit
