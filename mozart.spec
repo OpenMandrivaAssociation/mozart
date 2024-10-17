@@ -10,7 +10,7 @@ Release:	%{release}
 Summary:	Mozart, an efficient and distributed implementation of Oz
 License:	Mozart License
 Group:		Development/Other
-Url:		http://www.mozart-oz.org/
+Url:		https://www.mozart-oz.org/
 Source0:	ftp://ftp.mozart-oz.org/pub/%{version}/tar/%{name}-%{version}.%{date}-src.tar.gz
 Patch1:		mozart-1.4.0.20080704-fhs.patch
 Patch2:		mozart-1.4.0.20080704-add-missing-man-pages.patch
