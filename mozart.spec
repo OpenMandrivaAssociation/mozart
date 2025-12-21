@@ -17,6 +17,11 @@ Patch2:		mozart-1.4.0.20080704-add-missing-man-pages.patch
 Patch3:		mozart-1.4.0.20080704-fix-tcl-build.patch
 Patch4:     mozart-1.4.0.20080704-fix-build.patch
 Patch5:     mozart-1.4.0.20080704-fix-install.patch
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	libgmp-devel
 BuildRequires:	libgdbm-devel
 BuildRequires:	zlib-devel
